@@ -9,9 +9,9 @@ def a_plus_abs_b(a, b):
     5
     """
     if b < 0:
-        f = _____
+        f = sub
     else:
-        f = _____
+        f = add
     return f(a, b)
 
 def two_of_three(a, b, c):
@@ -28,6 +28,11 @@ def two_of_three(a, b, c):
     50
     """
     "*** YOUR CODE HERE ***"
+    if a < b :
+        a, b = b, a
+    if b < c :
+        b, c = c, b
+    return a*a + b*b 
 
 def if_function(condition, true_result, false_result):
     """Return true_result if condition is a true value, and
@@ -62,12 +67,15 @@ def with_if_function():
 
 def c():
     "*** YOUR CODE HERE ***"
+    return True
 
 def t():
     "*** YOUR CODE HERE ***"
+    return 1
 
 def f():
     "*** YOUR CODE HERE ***"
+    return 1 / 0
 
 def hailstone(n):
     """Print the hailstone sequence starting at n and return its
@@ -85,9 +93,20 @@ def hailstone(n):
     7
     """
     "*** YOUR CODE HERE ***"
+    total_num  = 1
+    while n != 1 :
+        print(n)
+        if n % 2 == 0 :
+            n = n // 2
+        else :
+            n = n * 3 + 1
+        total_num += 1
+    print(n)
+    return total_num
 
 challenge_question_program = """
 "*** YOUR CODE HERE ***"
 """
+s = "print('s = ' + repr(s) + '; eval(s)')"; eval(s) 
 
 
