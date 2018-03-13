@@ -25,6 +25,12 @@ def piecewise(f, g, b):
     1
     """
     "*** YOUR CODE HERE ***"
+    def h(x):
+        if x < b:
+            return f(x)
+        else:
+            return g(x)
+    return h
 
 def repeated(f, n):
     """Return the function that computes the nth application of f.
@@ -40,6 +46,11 @@ def repeated(f, n):
     152587890625
     """
     "*** YOUR CODE HERE ***"
+    final = f
+    while n > 1:
+        final = compose1(f, final)
+        n -= 1
+    return final
 
 def compose1(f, g):
     """Return a function h, such that h(x) = f(g(x))."""
@@ -60,10 +71,12 @@ def successor(n):
 def one(f):
     """Church numeral 1: same as successor(zero)"""
     "*** YOUR CODE HERE ***"
+    return lambda x: f(x)
 
 def two(f):
     """Church numeral 2: same as successor(successor(zero))"""
     "*** YOUR CODE HERE ***"
+    return lambda x: f(f(x))
 
 three = successor(two)
 
@@ -80,6 +93,9 @@ def church_to_int(n):
     3
     """
     "*** YOUR CODE HERE ***"
+    def add_one(x):
+        return x + 1
+    return n(add_one)(0)
 
 def add_church(m, n):
     """Return the Church numeral for m + n, for Church numerals m and n.
@@ -88,7 +104,7 @@ def add_church(m, n):
     5
     """
     "*** YOUR CODE HERE ***"
-
+    return lambda f: lambda x: m(f)(n(f)(x))
 def mul_church(m, n):
     """Return the Church numeral for m * n, for Church numerals m and n.
 
@@ -99,6 +115,7 @@ def mul_church(m, n):
     12
     """
     "*** YOUR CODE HERE ***"
+    return lambda f: m(n(f))
 
 def pow_church(m, n):
     """Return the Church numeral m ** n, for Church numerals m and n.
@@ -109,4 +126,5 @@ def pow_church(m, n):
     9
     """
     "*** YOUR CODE HERE ***"
+    return n(m)
 
