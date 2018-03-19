@@ -25,6 +25,24 @@ def cycle(f1, f2, f3):
     19
     """
     "*** YOUR CODE HERE ***"
+    def run_cycle(n):
+        def cycled(x):
+            result = x
+            cycle_left = n
+            while cycle_left > 0:
+                result = f1(result)
+                cycle_left -= 1
+                if cycle_left == 0:
+                    break
+                result = f2(result)
+                cycle_left -= 1
+                if cycle_left == 0:
+                    break
+                result = f3(result)
+                cycle_left -= 1
+            return result
+        return cycled
+    return run_cycle
 
 # Q10
 def lambda_curry2(func):
@@ -37,7 +55,7 @@ def lambda_curry2(func):
     8
     """
     "*** YOUR CODE HERE ***"
-    return ______
+    return lambda x: lambda y: func(x, y)  
 
 # Q12
 def paths(m, n):
@@ -54,6 +72,10 @@ def paths(m, n):
     1
     """
     "*** YOUR CODE HERE ***"
+    if m == 1 or n == 1:
+        return 1
+    return paths(m - 1, n) + paths(m, n -1)
+
 
 # Q13
 def gcd(a, b):
@@ -70,3 +92,8 @@ def gcd(a, b):
     40
     """
     "*** YOUR CODE HERE ***"
+    if a < b:
+        a, b = b, a
+    if a % b == 0:
+        return b
+    return gcd(b, a % b)
