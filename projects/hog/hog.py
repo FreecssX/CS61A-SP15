@@ -20,6 +20,17 @@ def roll_dice(num_rolls, dice=six_sided):
     assert type(num_rolls) == int, 'num_rolls must be an integer.'
     assert num_rolls > 0, 'Must roll at least once.'
     "*** YOUR CODE HERE ***"
+    total_score = 0
+    is_pig_out = False
+    while num_rolls > 0:
+    	score = dice();
+    	if score == 1:
+    		is_pig_out = True
+    	total_score += score
+    	num_rolls -= 1
+    if is_pig_out:
+    	total_score = 1
+    return total_score
 
 
 def take_turn(num_rolls, opponent_score, dice=six_sided):
@@ -34,12 +45,21 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     assert num_rolls <= 10, 'Cannot roll more than 10 dice.'
     assert opponent_score < 100, 'The game should be over.'
     "*** YOUR CODE HERE ***"
+    if num_rolls == 0:
+    	first_digit = opponent_score // 10 % 10
+    	second_digit = opponent_score % 10
+    	return max(first_digit, second_digit) + 1
+    else:
+    	return roll_dice(num_rolls, dice)
 
 def select_dice(score, opponent_score):
     """Select six-sided dice unless the sum of SCORE and OPPONENT_SCORE is a
     multiple of 7, in which case select four-sided dice (Hog wild).
     """
     "*** YOUR CODE HERE ***"
+    if (score + opponent_score) % 7 == 0:
+    	return four_sided
+    return six_sided
 
 def is_prime(n):
     """Return True if a non-negative number N is prime, otherwise return
@@ -47,11 +67,12 @@ def is_prime(n):
     """
     assert type(n) == int, 'n must be an integer.'
     assert n >= 0, 'n must be non-negative.'
-    k = 1
+    k = 2
     while k < n:
         if n % k == 0:
             return False
-    return True
+        k += 1
+    return True and not(n == 0 or n == 1)
 
 
 def other(who):
@@ -79,7 +100,36 @@ def play(strategy0, strategy1, score0=0, score1=0, goal=GOAL_SCORE):
     """
     who = 0  # Which player is about to take a turn, 0 (first) or 1 (second)
     "*** YOUR CODE HERE ***"
-    return score0, score1  # You may want to change this line.
+    while score0 < goal and score1 < goal:
+    	if who == 0:
+    		num_rolls = strategy0(score0,score1)
+    		dice = select_dice(score0, score1)
+    		earned_score = take_turn(num_rolls, score1, dice)
+    		score0 += earned_score
+    	else:
+    		num_rolls = strategy1(score1,score0)
+    		dice = select_dice(score1, score0)
+    		earned_score = take_turn(num_rolls, score0, dice)
+    		score1 += earned_score
+    	who = other(who)
+    	score0, score1 = hogtimus_prime(score0, score1, earned_score)
+    return score0,score1  # You may want to change this line.
+
+def hogtimus_prime(score0, score1, earned_score):
+	""" implement the hogtimus prime rule, add the earned_score to the 
+	leader if the sum of the scores of both players is a prime number while 
+	the two scores are not equal. Return the scores of the players. 
+
+	score0: Player0's score
+	score1: Player1's score
+	earned_score: The earned_score after a turn
+	"""
+	if is_prime(score0 + score1) and score0 != score1:
+		if score0 > score1:
+			score0 += earned_score
+		else:
+			score1 += earned_score
+	return score0, score1
 
 #######################
 # Phase 2: Strategies #
