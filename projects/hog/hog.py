@@ -154,7 +154,7 @@ def always_roll(n):
 
 # Experiments
 
-def make_averaged(fn, num_samples=1000):
+def make_averaged(fn, num_samples=10000):
     """Return a function that returns the average_value of FN when called.
 
     To implement this function, you will have to use *args syntax, a new Python
@@ -173,6 +173,12 @@ def make_averaged(fn, num_samples=1000):
     Thus, the average value is 6.0.
     """
     "*** YOUR CODE HERE ***"
+    def averaged_fn(*args):
+        result = 0
+        for i in range(num_samples):
+            result += fn(*args)
+        return result / num_samples
+    return averaged_fn
 
 def max_scoring_num_rolls(dice=six_sided):
     """Return the number of dice (1 to 10) that gives the highest average turn
@@ -184,6 +190,15 @@ def max_scoring_num_rolls(dice=six_sided):
     10
     """
     "*** YOUR CODE HERE ***"
+    roll_num = 1
+    max_score = 0
+    for i in range(1, 11):
+        average_score = make_averaged(roll_dice)(i, dice)
+        if average_score > max_score:
+            max_score = average_score
+            roll_num = i
+    return roll_num, max_score
+
 
 def winner(strategy0, strategy1):
     """Return 0 if strategy0 wins against strategy1, and 1 otherwise."""
@@ -201,7 +216,7 @@ def average_win_rate(strategy, baseline=always_roll(5)):
 
 def run_experiments():
     """Run a series of strategy experiments and report results."""
-    if True: # Change to False when done finding max_scoring_num_rolls
+    if False: # Change to False when done finding max_scoring_num_rolls
         six_sided_max = max_scoring_num_rolls(six_sided)
         print('Max scoring num rolls for six-sided dice:', six_sided_max)
         four_sided_max = max_scoring_num_rolls(four_sided)
@@ -216,7 +231,7 @@ def run_experiments():
     if False: # Change to True to test prime_strategy
         print('prime_strategy win rate:', average_win_rate(prime_strategy))
 
-    if False: # Change to True to test final_strategy
+    if True: # Change to True to test final_strategy
         print('final_strategy win rate:', average_win_rate(final_strategy))
 
     "*** You may add additional experiments as you wish ***"
@@ -228,7 +243,9 @@ def bacon_strategy(score, opponent_score, margin=8, num_rolls=5):
     and rolls NUM_ROLLS otherwise.
     """
     "*** YOUR CODE HERE ***"
-    return None # Replace this statement
+    if (max(opponent_score % 10, opponent_score // 10) >= margin - 1):
+        return 0
+    return num_rolls # Replace this statement
 
 def prime_strategy(score, opponent_score, margin=8, num_rolls=5):
     """This strategy rolls 0 dice when it results in a beneficial boost and
@@ -237,16 +254,33 @@ def prime_strategy(score, opponent_score, margin=8, num_rolls=5):
     otherwise.
     """
     "*** YOUR CODE HERE ***"
-    return None # Replace this statement
+    bacon_score = max(opponent_score % 10, opponent_score // 10) + 1
+    score_after_bacon = score + bacon_score
+    score_new, opponent_score_new = hogtimus_prime(score_after_bacon, opponent_score, bacon_score)
+    if (score_new > score_after_bacon or \
+        (bacon_score >= margin and opponent_score_new == opponent_score) or \
+        (select_dice(score_after_bacon, opponent_score) == four_sided and opponent_score_new == opponent_score)):
+        return 0
+    return num_rolls # Replace this statement
 
 
+max_roll_for_four_sided, four_sided_score = max_scoring_num_rolls(four_sided)
+max_roll_for_six_sided, six_sided_score = max_scoring_num_rolls(six_sided)
 def final_strategy(score, opponent_score):
     """Write a brief description of your final strategy.
 
     *** YOUR DESCRIPTION HERE ***
     """
     "*** YOUR CODE HERE ***"
-    return 5 # Replace this statement
+    dice = select_dice(score, opponent_score)
+    if dice == four_sided:
+        if score < opponent_score:
+            return max_roll_for_four_sided
+        return prime_strategy(score, opponent_score, four_sided_score, max_roll_for_four_sided)
+    else:
+        if score < opponent_score:
+            return max_roll_for_six_sided
+        return prime_strategy(score, opponent_score, six_sided_score, max_roll_for_six_sided)
 
 
 ##########################
