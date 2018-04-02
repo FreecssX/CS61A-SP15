@@ -13,6 +13,9 @@ def g(n):
     22
     """
     "*** YOUR CODE HERE ***"
+    if n <= 3:
+    	return n
+    return g(n - 1) + 2 * g(n - 2) + 3 * g(n - 3) 
 
 def g_iter(n):
     """Return the value of G(n), computed iteratively.
@@ -29,6 +32,15 @@ def g_iter(n):
     22
     """
     "*** YOUR CODE HERE ***"
+    g1 = 1
+    g2 = 2
+    g3 = 3
+    index = 1
+    while index < n:
+    	g1, g2, g3 = g2, g3, g3 + 2 * g2 + 3 * g1
+    	index += 1
+    return g1
+
 
 
 def has_seven(k):
@@ -48,6 +60,9 @@ def has_seven(k):
     True
     """
     "*** YOUR CODE HERE ***"
+    if k == 0:
+    	return False
+    return k % 10 == 7 or has_seven(k // 10)
 
 
 def pingpong(n):
@@ -79,6 +94,17 @@ def pingpong(n):
     2
     """
     "*** YOUR CODE HERE ***"
+    def countup(dir, start, end):
+    	if start == end:
+    		return 1
+    	if has_seven(start) or start % 7 == 0:
+    		dir = not dir
+    	if dir:
+    		return countup(dir, start + 1, end) + 1
+    	else:
+    		return countup(dir, start + 1, end) - 1
+    return countup(True, 1, n)
+
 
 
 def count_change(amount):
@@ -94,6 +120,21 @@ def count_change(amount):
     9828
     """
     "*** YOUR CODE HERE ***"
+    coins = []
+    i = 0
+    while 2 ** i <= amount:
+    	coins.append(2 ** i)
+    	i += 1
+    def count(m, c):
+    	if m == 0:
+    		return 1
+    	if m < 0:
+    		return 0
+    	if len(c) == 0:
+    		return 0
+    	return count(m - c[len(c) - 1], c) + count(m, c[: -1])
+    return count(amount, coins)
+
 
 
 def towers_of_hanoi(n, start, end):
@@ -119,7 +160,17 @@ def towers_of_hanoi(n, start, end):
     """
     assert 0 < start <= 3 and 0 < end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+    if n == 1:
+    	print_step(start, end)
+    	return
+    middle = 6 - start - end
+    towers_of_hanoi(n - 1, start, middle)
+    towers_of_hanoi(1, start, end)
+    towers_of_hanoi(n - 1, middle, end)
 
+
+def print_step(start, end):
+	print("Move the top disk from rod", str(start), "to rod", str(end))
 
 from operator import sub, mul
 
@@ -129,4 +180,3 @@ def make_anonymous_factorial():
     >>> make_anonymous_factorial()(5)
     120
     """
-    return 'YOUR_EXPRESSION_HERE'
