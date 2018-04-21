@@ -57,14 +57,15 @@ class Account(object):
     def __init__(self, account_holder):
         self.balance = 0
         self.holder = account_holder
+        self.transactions = []
         "*** YOUR CODE HERE ***"
 
     def deposit(self, amount):
         """Increase the account balance by amount and return the
         new balance.
         """
-        "*** YOUR CODE HERE ***"
         self.balance = self.balance + amount
+        self.transactions.append(('deposit', amount))
         return self.balance
 
     def withdraw(self, amount):
@@ -75,6 +76,7 @@ class Account(object):
         if amount > self.balance:
             return 'Insufficient funds'
         self.balance = self.balance - amount
+        self.transactions.append(('withdraw', amount))
         return self.balance
 
 # Q4
