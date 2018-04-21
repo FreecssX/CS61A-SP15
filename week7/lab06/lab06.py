@@ -22,10 +22,10 @@ class Person(object):
     """
     def __init__(self, name):
         self.name = name
-        "*** YOUR CODE HERE ***"
+        self.stuff = 'I squirreled it away before it could catch on fire.'
 
     def say(self, stuff):
-        "*** YOUR CODE HERE ***"
+        self.stuff = stuff
         return stuff
 
     def ask(self, stuff):
@@ -35,7 +35,7 @@ class Person(object):
         return self.say("Hello, my name is " + self.name)
 
     def repeat(self):
-        "*** YOUR CODE HERE ***"
+        return self.stuff
 
 # Q3
 class Account(object):
@@ -104,9 +104,14 @@ class BadBankAccount(Account):
         """Decrease the account balance by amount and return the
         new balance.
         """
-        "*** YOUR CODE HERE ***"
-        self.balance = self.balance - amount
+        if self.balance < 0:
+        	print('You have overdrawn, please add more money!')
+        else:
+        	self.balance = self.balance - amount
         return self.balance
 
-    "*** YOUR CODE HERE ***"
+    @property
+    def overdrawn(self):
+    	return self.balance < 0
+
 
